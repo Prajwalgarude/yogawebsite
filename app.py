@@ -1,0 +1,284 @@
+# Import the Flask module
+from flask import Flask, render_template_string
+
+# Initialize the Flask application
+app = Flask(__name__)
+
+# The HTML content for your yoga webpage
+# This HTML is embedded directly into the Python code for simplicity,
+# but in a larger application, you might use Flask's template rendering
+# system with HTML files in a 'templates' folder.
+HTML_CONTENT = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover the Path of Yoga</title>
+    <!-- Load Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F7FAFC; /* Light gray background */
+        }
+        .hero-background {
+            /* Placeholder image for a peaceful yoga scene */
+            background-image: url('https://placehold.co/1920x800/6A8FD7/FFFFFF?text=Peaceful%20Yoga%20Scene');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            z-index: 0;
+        }
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.5) 100%);
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg py-4 px-6 md:px-12">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-white text-3xl font-bold rounded-lg p-2 hover:bg-white hover:text-blue-600 transition duration-300">Yoga Haven</a>
+            <ul class="hidden md:flex space-x-8">
+                <li><a href="#benefits" class="text-white hover:text-blue-200 text-lg transition duration-300 rounded-lg p-2 hover:bg-blue-700">Benefits</a></li>
+                <li><a href="#types" class="text-white hover:text-blue-200 text-lg transition duration-300 rounded-lg p-2 hover:bg-blue-700">Types</a></li>
+                <li><a href="#start" class="text-white hover:text-blue-200 text-lg transition duration-300 rounded-lg p-2 hover:bg-blue-700">Get Started</a></li>
+                <li><a href="#contact" class="text-white hover:text-blue-200 text-lg transition duration-300 rounded-lg p-2 hover:bg-blue-700">Contact</a></li>
+            </ul>
+            <!-- Mobile Menu Button (Hamburger) -->
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-90 z-50 hidden flex flex-col items-center justify-center space-y-8">
+        <button id="close-menu-button" class="absolute top-6 right-6 text-white focus:outline-none">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <ul class="text-white text-3xl font-semibold space-y-6 text-center">
+            <li><a href="#benefits" class="block py-3 hover:text-blue-400 transition duration-300">Benefits</a></li>
+            <li><a href="#types" class="block py-3 hover:text-blue-400 transition duration-300">Types</a></li>
+            <li><a href="#start" class="block py-3 hover:text-blue-400 transition duration-300">Get Started</a></li>
+            <li><a href="#contact" class="block py-3 hover:text-blue-400 transition duration-300">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-background h-screen flex items-center justify-center text-center text-white p-4">
+        <div class="bg-black bg-opacity-40 rounded-xl p-8 md:p-12 shadow-2xl max-w-3xl">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg">Discover Harmony: Your Journey into Yoga</h1>
+            <p class="text-lg md:text-2xl mb-8 drop-shadow-md">Uncover the ancient practice that unites mind, body, and spirit for a healthier, happier you.</p>
+            <a href="#start" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full text-xl shadow-lg transform hover:scale-105 transition duration-300 ease-in-out">Start Your Yoga Journey</a>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-4 md:px-8">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-blue-800">The Incredible Benefits of Yoga</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Benefit Card 1 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition duration-300 ease-in-out border border-blue-100">
+                    <div class="text-blue-500 mb-4 text-5xl flex justify-center">🧘‍♀️</div>
+                    <h3 class="text-2xl font-semibold mb-4 text-center text-gray-900">Improved Physical Health</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Increases flexibility and strength</li>
+                        <li>Enhances balance and posture</li>
+                        <li>Reduces chronic pain (back, arthritis)</li>
+                        <li>Boosts circulation and heart health</li>
+                    </ul>
+                </div>
+                <!-- Benefit Card 2 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition duration-300 ease-in-out border border-blue-100">
+                    <div class="text-green-500 mb-4 text-5xl flex justify-center">🧠</div>
+                    <h3 class="text-2xl font-semibold mb-4 text-center text-gray-900">Mental Clarity & Focus</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Calms the nervous system</li>
+                        <li>Reduces stress and anxiety</li>
+                        <li>Improves concentration and memory</li>
+                        <li>Fosters emotional regulation</li>
+                    </ul>
+                </div>
+                <!-- Benefit Card 3 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition duration-300 ease-in-out border border-blue-100">
+                    <div class="text-purple-500 mb-4 text-5xl flex justify-center">✨</div>
+                    <h3 class="text-2xl font-semibold mb-4 text-center text-gray-900">Spiritual Growth & Well-being</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Connects mind, body, and spirit</li>
+                        <li>Cultivates mindfulness and presence</li>
+                        <li>Promotes self-awareness and inner peace</li>
+                        <li>Enhances overall quality of life</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Types of Yoga Section -->
+    <section id="types" class="py-16 md:py-24 bg-blue-100">
+        <div class="container mx-auto px-4 md:px-8">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-blue-800">Explore Different Types of Yoga</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Yoga Type Card 1 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-blue-200">
+                    <img src="https://placehold.co/400x250/9CA3AF/FFFFFF?text=Hatha+Yoga" alt="Hatha Yoga" class="w-full h-48 object-cover rounded-lg mb-4 shadow">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-900">Hatha Yoga</h3>
+                    <p class="text-gray-700">A gentle introduction to basic yoga postures and breathing techniques. Great for beginners.</p>
+                </div>
+                <!-- Yoga Type Card 2 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-blue-200">
+                    <img src="https://placehold.co/400x250/9CA3AF/FFFFFF?text=Vinyasa+Yoga" alt="Vinyasa Yoga" class="w-full h-48 object-cover rounded-lg mb-4 shadow">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-900">Vinyasa Yoga</h3>
+                    <p class="text-gray-700">Flowing sequences of poses synchronized with breath, often more dynamic and challenging.</p>
+                </div>
+                <!-- Yoga Type Card 3 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-blue-200">
+                    <img src="https://placehold.co/400x250/9CA3AF/FFFFFF?text=Restorative+Yoga" alt="Restorative Yoga" class="w-full h-48 object-cover rounded-lg mb-4 shadow">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-900">Restorative Yoga</h3>
+                    <p class="text-gray-700">Gentle, supported poses held for longer durations to promote deep relaxation and healing.</p>
+                </div>
+                <!-- Yoga Type Card 4 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-blue-200">
+                    <img src="https://placehold.co/400x250/9CA3AF/FFFFFF?text=Ashtanga+Yoga" alt="Ashtanga Yoga" class="w-full h-48 object-cover rounded-lg mb-4 shadow">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-900">Ashtanga Yoga</h3>
+                    <p class="text-gray-700">A rigorous, physically demanding style with a set sequence of poses and strong breath work.</p>
+                </div>
+                <!-- Yoga Type Card 5 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-blue-200">
+                    <img src="https://placehold.co/400x250/9CA3AF/FFFFFF?text=Kundalini+Yoga" alt="Kundalini Yoga" class="w-full h-48 object-cover rounded-lg mb-4 shadow">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-900">Kundalini Yoga</h3>
+                    <p class="text-gray-700">Focuses on awakening inner energy through chanting, breathing, and specific movements.</p>
+                </div>
+                <!-- Yoga Type Card 6 -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-blue-200">
+                    <img src="https://placehold.co/400x250/9CA3AF/FFFFFF?text=Yin+Yoga" alt="Yin Yoga" class="w-full h-48 object-cover rounded-lg mb-4 shadow">
+                    <h3 class="text-2xl font-semibold mb-3 text-gray-900">Yin Yoga</h3>
+                    <p class="text-gray-700">Passive poses held for several minutes to target deep connective tissues and increase flexibility.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Get Started Section -->
+    <section id="start" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-4 md:px-8">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 text-blue-800">Ready to Get Started?</h2>
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 border border-blue-100">
+                <p class="text-xl text-gray-700 mb-8 text-center leading-relaxed">
+                    Embarking on your yoga journey is a rewarding experience. Here are a few tips to help you begin:
+                </p>
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 bg-blue-500 rounded-full p-3 text-white text-2xl font-bold mr-4 shadow-md">1</div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900">Find a Beginner-Friendly Class</h3>
+                            <p class="text-gray-700">Look for local studios offering "Beginner Yoga" or "Hatha Yoga" classes. An experienced instructor can guide you through the basics safely.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 bg-blue-500 rounded-full p-3 text-white text-2xl font-bold mr-4 shadow-md">2</div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900">Gather Your Essentials</h3>
+                            <p class="text-gray-700">All you really need is a comfortable yoga mat. Wear comfortable clothing that allows for full range of motion. Props like blocks or straps can be helpful but aren't necessary to start.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 bg-blue-500 rounded-full p-3 text-white text-2xl font-bold mr-4 shadow-md">3</div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900">Listen to Your Body</h3>
+                            <p class="text-gray-700">Yoga is about connecting with yourself. Never push into pain. Modify poses as needed and respect your body's limits. Consistency is more important than perfection.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 bg-blue-500 rounded-full p-3 text-white text-2xl font-bold mr-4 shadow-md">4</div>
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-2 text-gray-900">Be Patient and Enjoy the Process</h3>
+                            <p class="text-gray-700">Progress in yoga is gradual. Focus on the journey, the breath, and the feeling of movement. Celebrate small victories and enjoy the growing sense of peace and strength.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-12">
+                    <p class="text-lg text-gray-600 italic">"Yoga is the journey of the self, through the self, to the self." - The Bhagavad Gita</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section (Simple Placeholder) -->
+    <section id="contact" class="py-16 md:py-24 bg-blue-900 text-white">
+        <div class="container mx-auto px-4 md:px-8 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-8">Connect With Us</h2>
+            <p class="text-lg md:text-xl mb-6">Have questions or want to learn more? Reach out to us!</p>
+            <div class="flex justify-center space-x-6 mb-8">
+                <a href="mailto:info@yogahaven.com" class="text-white hover:text-blue-300 transition duration-300">
+                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.003 5.884L10 12l8-6.116C17.218 5.309 16.205 5 15 5H9c-1.205 0-2.218.309-3 .884L2.003 5.884zm-.003 12.238V8.16L12 14.5l10-6.34v9.962C22 18.883 22 19 21 19H3c-1 0-1-.117-1-.878z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="text-white hover:text-blue-300 transition duration-300">
+                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.154 8.784h-1.92V9.664a.5.5 0 01.5-.5h.692v-1.89h-.813c-2.072 0-2.88 1.547-2.88 2.923v1.697H8.538v2.308h1.282v5.154h2.769v-5.154h1.92l.256-2.308z"></path>
+                    </svg>
+                </a>
+                <!-- Placeholder for another social icon if desired -->
+            </div>
+            <p class="text-md">&copy; 2025 Yoga Haven. All rights reserved.</p>
+        </div>
+    </section>
+
+    <!-- JavaScript for Mobile Menu (will not execute as Python renders HTML) -->
+    <script>
+        // Note: This JavaScript for the mobile menu will be part of the HTML
+        // that Flask renders. It will still function client-side in the browser.
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const closeMenuButton = document.getElementById('close-menu-button');
+        const mobileMenuLinks = mobileMenuOverlay.querySelectorAll('a');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenuOverlay.classList.remove('hidden');
+        });
+
+        closeMenuButton.addEventListener('click', () => {
+            mobileMenuOverlay.classList.add('hidden');
+        });
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuOverlay.classList.add('hidden'); // Hide menu when a link is clicked
+            });
+        });
+    </script>
+</body>
+</html>
+"""
+
+# Define the route for the home page
+@app.route('/')
+def home():
+    # Render the HTML content directly as a string
+    return render_template_string(HTML_CONTENT)
+
+# Main entry point for the application
+# This block ensures the Flask development server runs only when the script is executed directly.
+if __name__ == '__main__':
+    # In a production OpenShift environment, Gunicorn or uWSGI would typically
+    # serve the Flask app, so app.run() is mainly for local development/testing.
+    app.run(debug=True, host='0.0.0.0', port=8080)
