@@ -67,6 +67,11 @@ HTML_CONTENT = """
 </head>
 <body class="text-gray-800">
 
+    <!-- New Orange Header Section -->
+    <section class="w-full bg-orange-600 text-white text-center py-4 md:py-6 lg:py-8 shadow-xl">
+        <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-wide drop-shadow-md">Yoga Se Hi Hoga</h1>
+    </section>
+
     <!-- Header Section -->
     <header class="bg-gradient-to-r from-teal-500 to-emerald-600 shadow-xl py-4 px-6 md:px-12">
         <nav class="container mx-auto flex justify-between items-center">
